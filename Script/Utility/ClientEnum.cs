@@ -5,6 +5,7 @@ public enum eTileType
 {
     Default,
     Farm,
+    Water,
 }
 public enum eTileCompressionType : byte
 {
@@ -37,6 +38,7 @@ public enum eComponentEvent
     InteractInput,
     Interact,
     InteractEnd,
+    ActivateRender,
     SetObjectRender,
     HitRender,
     ActivateOutline,
@@ -163,9 +165,10 @@ public enum eItemType
     Scroll = 1 << 10,
     Magazine = 1 << 11,
     Crop = 1 << 12,
+    BridgeTile = 1 << 13,
 
     EquipItem = Hat | Armor | Shoes | Necklace | Ring,
-    UseItem = Weapon | Medical | Install | Food | Scroll | Magazine | Crop,
+    UseItem = Weapon | Medical | Install | Food | Scroll | Magazine | Crop | BridgeTile,
 }
 public enum eEquipSlotType
 {
@@ -278,6 +281,7 @@ public enum eStaticActorType
     Refinement,
     Storage,
     Sleep,
+    Tile,
 }
 public enum eObjectRenderState
 {

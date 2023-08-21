@@ -29,7 +29,9 @@ public class WeatherController
             DurationTime = durationTime,
             Intencity = intensity,
         };
+#if UNITY_SERVER
         NetworkManager.Instance.StageEventSender.NotifyStartFog(FogHandler);
+#endif
     }
     public void SetRuntimeParamerter(WeatherHandler weatherHandler)
     {

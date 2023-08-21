@@ -23,7 +23,7 @@ public class SpawnHandler
             _currentTickDic.Add(SpawnDataList[i].AreaNumber, SpawnDataList[i].SpawnTick);
         }
     }
-    public void DecreaseMonsterCount(int index) => _currentSpawnedDic[index] -= 1;
+    public void DecreaseMonsterCount(int areaNumber) => _currentSpawnedDic[areaNumber] -= 1;
     bool IsRequireSpawn(SpawnData data) => data.MaxCount > _currentSpawnedDic[data.AreaNumber];
     void RequestPushSpawnQueue(SpawnData data)
     {
@@ -54,7 +54,7 @@ public class SpawnHandler
             {
                 if (IsRequireSpawn(SpawnDataList[i]))
                 {
-                    _currentTickDic[areaNumber] = SpawnDataList[areaNumber].SpawnTick;
+                    _currentTickDic[areaNumber] += SpawnDataList[areaNumber].SpawnTick;
                     RequestPushSpawnQueue(SpawnDataList[i]);
                 }
             }

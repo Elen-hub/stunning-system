@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 
-public class Skill_InstallCrop : BaseSkill
+public class Skill_InstallBridgeTile : BaseSkill
 {
     public struct InstallData
     {
-        public int CrobObjectIndex;
+        public int ObjectIndex;
     }
     [JsonRequired]
     public InstallData _installData;
@@ -15,7 +15,7 @@ public class Skill_InstallCrop : BaseSkill
     {
         base.OnProcessInformationText();
 
-        Data.ObjectData objectData = DataManager.Instance.ObjectTable[_installData.CrobObjectIndex];
+        Data.ObjectData objectData = DataManager.Instance.ObjectTable[_installData.ObjectIndex];
         System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
         stringBuilder.Append(LocalizingManager.Instance.GetLocalizing(8001, LocalizingManager.Instance.GetLocalizing(objectData.NameKey)));
         _informationText = stringBuilder.ToString();
@@ -33,7 +33,7 @@ public class Skill_InstallCrop : BaseSkill
             return false;
 
         if (GridManager.Instance.IsPossibleInstallAtRuntime(caster.Position))
-            return !(GridManager.Instance.IsOverlapObject(worldPosition, DataManager.Instance.ObjectTable[_installData.CrobObjectIndex].TileList));
+            return !(GridManager.Instance.IsOverlapObject(worldPosition, DataManager.Instance.ObjectTable[_installData.ObjectIndex].TileList));
 
         return false;
     }
@@ -42,16 +42,15 @@ public class Skill_InstallCrop : BaseSkill
         if (!WorldManager.Instance.TileChunkSystem.GetOverrideTileDictionary.ContainsKey(tilePosition))
             return false;
 
-        if (WorldManager.Instance.TileChunkSystem.GetOverrideTileDictionary[tilePosition].GetOverrideTileData != null)
-        {
-            if (WorldManager.Instance.TileChunkSystem.GetOverrideTileDictionary[tilePosition].GetOverrideTileData.TileType != eTileType.Farm)
-                return false;
-        }
-        else
-        {
-            if (WorldManager.Instance.TileChunkSystem.GetOverrideTileDictionary[tilePosition].GetTileData.TileType != eTileType.Farm)
-                return false;
-        }
+        if (WorldManager.Instance.TileChunkSystem.GetOverrideTileDictionary[tilePosition].OverrideTileKey != 0)
+            return false;
+
+        if (WorldManager.Instance.TileChunkSystem.GetOverrideTileDictionary[tilePosition].TileKey == 0)
+            return false;
+
+        if (WorldManager.Instance.TileChunkSystem.GetOverrideTileDictionary[tilePosition].GetTileData.TileType != eTileType.Water)
+            return false;
+
         return true;
     }
     protected override IEnumerator IEStartSequenceProcess(IActor caster, Vector2 direction)
@@ -60,7 +59,7 @@ public class Skill_InstallCrop : BaseSkill
         caster.Controller.SetBlockState(eActionBlockType.Action | eActionBlockType.Move | eActionBlockType.Direction, _defaultData.DurationTime);
         Vector3Int worldPosition = GridManager.Instance.GetTilePosition;
         yield return CoroutineUtility.Wait(_defaultData.ReadyTime);
-        NetworkManager.Instance.ObjectEventSender.RequestInstallObject(_installData.CrobObjectIndex, new Vector2Int(worldPosition.x, worldPosition.y), PlayerManager.Instance.Me.Guid);
+        NetworkManager.Instance.ObjectEventSender.RequestInstallObject(_installData.ObjectIndex, new Vector2Int(worldPosition.x, worldPosition.y), PlayerManager.Instance.Me.Guid);
         yield break;
     }
 #if UNITY_EDITOR
@@ -68,8 +67,8 @@ public class Skill_InstallCrop : BaseSkill
     {
         base.OnGUIEditor(maxWidth, ref height, ref errorList);
 
-        UnityEditor.EditorGUI.LabelField(new Rect(0f, height, maxWidth * 2 / 3f, 20f), "Install Crop object index:");
-        _installData.CrobObjectIndex = UnityEditor.EditorGUI.IntField(new Rect(maxWidth * 2 / 3f, height, maxWidth * 1 / 3f, 20f), _installData.CrobObjectIndex);
+        UnityEditor.EditorGUI.LabelField(new Rect(0f, height, maxWidth * 2 / 3f, 20f), "Install object index:");
+        _installData.ObjectIndex = UnityEditor.EditorGUI.IntField(new Rect(maxWidth * 2 / 3f, height, maxWidth * 1 / 3f, 20f), _installData.ObjectIndex);
         height += 20f;
     }
     public override void SetDefaultData()

@@ -15,6 +15,13 @@ public class WorldManager : TSingletonMono<WorldManager>
     public Sprite GetMinimapPiece(Vector2Int pos) => MinimapSystem.GetMinimapPiece(pos);
     int _processCount = 0;
     IActor _mainCharacter;
+    public IActor SetActivator {
+        set {
+#if UNITY_SERVER
+            MonsterChunkSystem.ActivatorList.Add(value);
+#endif
+        }
+    }
     protected override void OnInitialize()
     {
         RoomConfiguration = new RoomConfiguration();
@@ -48,15 +55,16 @@ public class WorldManager : TSingletonMono<WorldManager>
             OnProcessChunkAsync(spawnArr[i]).Forget();
 
 #if UNITY_SERVER
-        IsCompleteLoad().ContinueWith(result => TileChunkSystem.BuildNavmesh());
+        IsCompleteLoad().Forget();
 #endif
     }
-    async UniTask<bool> IsCompleteLoad()
+    async UniTaskVoid IsCompleteLoad()
     {
         while (_processCount != 0)
             await UniTask.Yield();
 
-        return true;
+        TileChunkSystem.BuildNavmesh();
+        MonsterChunkSystem.StartMonsterSpawnTask();
     }
     async UniTaskVoid OnProcessChunkAsync(ChunkRootData chunkConfigure)
     {
@@ -147,9 +155,7 @@ public class WorldManager : TSingletonMono<WorldManager>
         if (!NetworkManager.Instance.Runner.IsRunning)
             return;
 
-#if UNITY_SERVER
-        MonsterChunkSystem.UpdateServer();
-#else
+#if !UNITY_SERVER
         if (_mainCharacter != null)
             MinimapSystem.Update(_mainCharacter.Position);
 #endif

@@ -2,15 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CropItem : UseItem
+public class BridgeTileItem : UseItem
 {
     public Data.ObjectData ObjectData => DataManager.Instance.ObjectTable[_installKey];
-    Skill_InstallCrop _installSkill;
-    public Skill_InstallCrop GetInstallSkill
+    Skill_InstallBridgeTile _installSkill;
+    public Skill_InstallBridgeTile GetInstallSkill
     {
         get {
             if (_installSkill == null)
-                _installSkill = GetSkill as Skill_InstallCrop;
+                _installSkill = GetSkill as Skill_InstallBridgeTile;
 
             return _installSkill;
         }
@@ -25,6 +25,9 @@ public class CropItem : UseItem
     public override void OnEnterSlot(IComponent actor)
     {
         base.OnEnterSlot(actor);
+
+        if (_installKey == 0)
+            _installKey = GetInstallSkill._installData.ObjectIndex;
 
         GridManager.Instance.OverlapCondition += GetInstallSkill.IsPossibleInstall;
         actor.SendComponentMessage(eComponentEvent.InstallMode, true, ObjectData.Index);

@@ -119,7 +119,7 @@ public class TileChunkSystem
             return false;
 
         _overrideTileData[worldPosition].OverrideTileKey = 0;
-        InstanceTile(true, _overrideTileData[worldPosition]);
+        InstanceTile(false, _overrideTileData[worldPosition]);
         return true;
     }
     public void SetOverrideTile(Vector2Int worldPosition, int overrideKey)

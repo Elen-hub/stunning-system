@@ -17,6 +17,7 @@ public class ObjectSkinComponent : SkinComponent
         AddEventMethods(eComponentEvent.ActivateOutline, OnReceiveEventActivateOutliner);
         AddEventMethods(eComponentEvent.SetObjectRender, OnReceiveEventSetObjectRender);
         AddEventMethods(eComponentEvent.HitRender, OnReceiveEventHitRender);
+        AddEventMethods(eComponentEvent.ActivateRender, OnReceiveEventActivateRender);
     }
     void OnInitializeRenderer()
     {
@@ -58,6 +59,15 @@ public class ObjectSkinComponent : SkinComponent
         {
             _isOutlineActive = isActive;
             ActiveOutline(_currentState, isActive);
+        }
+    }
+    void OnReceiveEventActivateRender(params object[] messageArr)
+    {
+        bool isActive = (bool)messageArr[0];
+        foreach(var element in _renderArrDictionary)
+        {
+            for (int i = 0; i < element.Value.Length; ++i)
+                element.Value[i].enabled = isActive;
         }
     }
     void OnReceiveEventSetObjectRender(params object[] messageArr)

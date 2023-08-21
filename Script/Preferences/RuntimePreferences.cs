@@ -10,6 +10,7 @@ public class Preference
 {
     public bool MuteMusic;
     public float MusicVolume;
+    [Range(50f, 300f)] public float MonsterSpawnRange;
     public eLanguage Language = eLanguage.Korean;
 }
 public class RuntimePreference : TSingletonMono<RuntimePreference>
@@ -40,6 +41,7 @@ public class RuntimePreference : TSingletonMono<RuntimePreference>
         {
             MuteMusic = false,
             MusicVolume = 1f,
+            MonsterSpawnRange = 100f,
         };
     }
     public bool LoadPreference()

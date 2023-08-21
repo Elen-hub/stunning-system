@@ -19,9 +19,7 @@ public class Player : IPacket
         {
             result.Name = PlayerCharacterData.Name;
             result.Object.AssignInputAuthority(PlayerID);
-#if UNITY_SERVER
-            WorldManager.Instance.MonsterChunkSystem.ActivatorList.Add(result);
-#endif
+            WorldManager.Instance.SetActivator = result;
             Character = result;
         });
     }

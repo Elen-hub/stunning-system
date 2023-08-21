@@ -245,6 +245,7 @@ public class DynamicActor : NetworkBehaviour, IActor
     public virtual void Destroy()
     {
         OnDestroyCallback?.Invoke();
+        OnDestroyCallback = null;
         ActorManager.Instance.RemoveWorld(WorldID);
     }
 }

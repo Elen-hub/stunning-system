@@ -69,6 +69,12 @@ public class Item : IPacket
                     Index = index,
                     Count = count,
                 };
+            case eItemType.BridgeTile:
+                return new BridgeTileItem()
+                {
+                    Index = index,
+                    Count = count,
+                };
             case eItemType.Install:
                 return new InstallItem()
                 {
